@@ -1,0 +1,1 @@
+# moa-plugin-wechat
