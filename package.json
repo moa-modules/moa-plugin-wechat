@@ -1,0 +1,24 @@
+{
+  "name": "moa-plugin-wechat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm publish .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "node ./node_modules/nmm-link/link.bin.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moa-modules/moa-plugin-wechat.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/moa-modules/moa-plugin-wechat/issues"
+  },
+  "homepage": "https://github.com/moa-modules/moa-plugin-wechat#readme",
+  "dependencies": {
+    "nmm-link": "^1.0.2"
+  }
+}
