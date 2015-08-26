@@ -1,0 +1,14 @@
+- var _action = wechat._action == 'edit' ? '#' : '/wechats/'
+- var _method = wechat._action == 'edit' ? ""  : "post"
+- var _type   = wechat._action == 'edit' ? "button"  : "submit"
+- var onClick  = wechat._action == 'edit' ?  "click_edit('wechat-" + wechat._action + "-form','/wechats/" + wechat._id + "/')" : ""
+form(id='wechat-#{ wechat._action}-form',action="#{_action}", method="#{_method}",role='form')
+  each n in ['wechat.openid','wechat.nickname','wechat.sex','wechat.language','wechat.city','wechat.province','wechat.country','wechat.headimgurl','wechat.privilege','wechat.created_at']
+    - m = eval(n);
+    div(class="field")
+      label #{n.split('.')[1]} #{m}
+      br
+      input(type='text',name="#{n.split('.')[1]}" ,value="#{ m == undefined ? '' : m }")
+        
+  div(class="actions") 
+    input(type='#{_type}',value='Submit',onClick='#{onClick}')

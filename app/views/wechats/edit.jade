@@ -1,0 +1,11 @@
+extends ../layouts/layout
+
+block content
+  h1 Editing wechat
+
+  include wechat
+
+  a(href='/wechats/#{ wechat._id}') Show
+  span |
+  a(href='/wechats') Back
+

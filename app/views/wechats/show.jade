@@ -1,0 +1,13 @@
+extends ../layouts/layout
+
+block content
+  p#notice
+
+  each n in ['wechat.openid','wechat.nickname','wechat.sex','wechat.language','wechat.city','wechat.province','wechat.country','wechat.headimgurl','wechat.privilege','wechat.created_at']
+    p
+      strong #{n.split('.')[1]}:
+      span #{eval(n)}
+
+  a(href='/wechats/#{ wechat._id}/edit') Edit
+  span |
+  a(href='/wechats') Back

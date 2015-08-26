@@ -1,0 +1,1 @@
+../../../../../.moa/app/middlewares/check_api_token.js

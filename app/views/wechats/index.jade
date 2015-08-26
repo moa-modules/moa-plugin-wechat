@@ -1,0 +1,27 @@
+extends ../layouts/layout
+
+block content
+  h1 Listing wechats
+
+  table
+    thead
+      tr
+        each n in ['openid','nickname','sex','language','city','province','country','headimgurl','privilege','created_at']
+          th #{n}
+        th(colspan="3")
+    tbody
+      each wechat in wechats
+        tr
+          each n in ['wechat.openid','wechat.nickname','wechat.sex','wechat.language','wechat.city','wechat.province','wechat.country','wechat.headimgurl','wechat.privilege','wechat.created_at']
+            td #{ eval(n) }
+          td 
+            a(href='/wechats/#{ wechat._id}') Show
+          td 
+            a(href='/wechats/#{ wechat._id}/edit') Edit
+          td 
+            a(onclick="click_del('/wechats/#{ wechat._id}/')") Delete
+
+  br
+
+  p 
+    a(href='/wechats/new') New Wechat
