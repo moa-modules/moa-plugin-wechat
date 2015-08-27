@@ -6,7 +6,7 @@ var mongoose    = require('mongoose');
 var Schema      = mongoose.Schema;
 var MongooseDao = require('mongoosedao');
 
-var wechatSchema = new Schema(
+var wechatSchema = new Schema({
   unionid       : String,
   openid: {// from weixin openid
     type: String,
@@ -27,7 +27,7 @@ var wechatSchema = new Schema(
     type: Date,
     "default": Date.now
   }
-);
+});
 
 
 wechatSchema.statics.find_by_openid = function(openid, cb) {

@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
+var signature = require('wx_jsapi_sign');
 // mount all middlewares in app/middlewares, examples:
 // 
 // router.route('/')
@@ -27,27 +28,29 @@ function wx_config(req, res, next) {
     'app_token':'mengxiaoban.com'
   }
   
+  var OAuth = require('wechat-oauth');
+  req.wx_client = new OAuth(req.wx.app_id, req.wx.app_secret);
+  
   next();
   
 };
  
 // var check_session = require('../middleware/check_session_is_expired');
-var OAuth = require('wechat-oauth');
-var signature = require('wx_jsapi_sign');
+
+
 
 // 读取配置项
-var config      = require('config');
-var app_id      = config.get('wx.app_id');
-var app_secret  = config.get('wx.app_secret');
-var domain      = config.get('domain');
-var app_token   = 'mengxiaoban.com'
+// var config      = require('config');
+// var app_id      = config.get('wx.app_id');
+// var app_secret  = config.get('wx.app_secret');
+// var domain      = config.get('domain');
+// var app_token   = 'mengxiaoban.com'
 
 // 微信授权和回调
-var client = new OAuth(app_id, app_secret);
 
 // 主页,主要是负责OAuth认真
 router.get('/oauth', wx_config, function(req, res) {
-  var url = client.getAuthorizeURL('http://' + req.wx.domain + '/wechats/callback','','snsapi_userinfo');
+  var url = req.wx_client.getAuthorizeURL('http://' + req.wx.domain + '/wechats/callback','','snsapi_userinfo');
 
   // 重定向请求到微信服务器
   res.redirect(url);
@@ -66,7 +69,7 @@ router.get('/callback', function(req, res) {
   var code = req.query.code;
   var User = req.model.UserModel;
 
-  client.getAccessToken(code, function (err, result) {
+  req.wx_client.getAccessToken(code, function (err, result) {
     console.dir(err);
     console.dir(result);
     var accessToken = result.data.access_token;
@@ -124,10 +127,10 @@ router.get('/callback', function(req, res) {
 
 router.post('/getsignature', wx_config, function config(req, res, next){
   req.wx_config = {
-    cache_json_file: req.server_path,
-    appId: req.wx.app_id,
-    appSecret: req.wx.app_secret,
-    appToken: req.wx.app_token
+    cache_json_file : req.server_path,
+    appId           : req.wx.app_id,
+    appSecret       : req.wx.app_secret,
+    appToken        : req.wx.app_token
   };
   
   next();
