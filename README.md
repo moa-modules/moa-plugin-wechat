@@ -8,3 +8,7 @@
 
   
 moag wechat openid:string nickname:string sex:string language:string city:string province:string country:string headimgurl:string privilege:string created_at:string 
+
+
+ngrok http 80
+

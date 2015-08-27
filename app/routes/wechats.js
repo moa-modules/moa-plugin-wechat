@@ -13,6 +13,9 @@ var $middlewares  = require('mount-middlewares')(__dirname);
 // core controller
 var $ = require('mount-controllers')(__dirname).wechats_controller;
 
+ // "app_id": "wx04014b02a0a61c90",
+// +    "app_secret": "cc4c224b5018370cf6ffc95ad2be309c",
+
 function wx_config(req, res, next) {
   
   // var config      = require('config');
@@ -22,9 +25,9 @@ function wx_config(req, res, next) {
   // var app_token   = 'mengxiaoban.com'
   
   req.wx = {
-    'app_id' : 'wx50b97d02c86f6c26',
-    'app_secret' : 'a50b4bd3fa1949624b7c404c6d48bda0',
-    'domain':'domain',
+    'app_id' : 'wx04014b02a0a61c90',
+    'app_secret' : 'cc4c224b5018370cf6ffc95ad2be309c',
+    'domain':'8b8f82a3.ngrok.io',
     'app_token':'mengxiaoban.com'
   }
   
@@ -37,16 +40,7 @@ function wx_config(req, res, next) {
  
 // var check_session = require('../middleware/check_session_is_expired');
 
-
-
-// 读取配置项
-// var config      = require('config');
-// var app_id      = config.get('wx.app_id');
-// var app_secret  = config.get('wx.app_secret');
-// var domain      = config.get('domain');
-// var app_token   = 'mengxiaoban.com'
-
-// 微信授权和回调
+// 微信授权和回调 http://e81fa9eb.ngrok.io
 
 // 主页,主要是负责OAuth认真
 router.get('/oauth', wx_config, function(req, res) {
@@ -56,6 +50,9 @@ router.get('/oauth', wx_config, function(req, res) {
   res.redirect(url);
 })
 
+var $models = require('mount-models')(__dirname);
+
+var Wechat = $models.wechat;
 
 /**
  * 认证授权后回调函数
@@ -64,10 +61,10 @@ router.get('/oauth', wx_config, function(req, res) {
  * - 如果是新用户，注册并绑定，然后跳转到手机号验证界面
  * - 如果是老用户，跳转到主页
  */
-router.get('/callback', function(req, res) {
+router.get('/callback', wx_config, function(req, res) {
   console.log('----weixin callback -----')
   var code = req.query.code;
-  var User = req.model.UserModel;
+  // var User = req.model.UserModel;
 
   req.wx_client.getAccessToken(code, function (err, result) {
     console.dir(err);
@@ -81,15 +78,15 @@ router.get('/callback', function(req, res) {
     console.log('unionid=' + unionid);
 
 
-    User.find_by_unionid(unionid, function(err, user){
+    Wechat.find_by_unionid(unionid, function(err, user){
       console.log('微信回调后，User.find_by_unionid(unionid) 返回的user = ' + user)
       if(err || user == null){
         console.log('经过unionid查询无结果');
 
-        client.getUser(openid, function (err, get_by_openid) {
+        req.client.getUser(openid, function (err, get_by_openid) {
           console.log(get_by_openid);
           var oauth_user = get_by_openid;
-          
+
           //  Wechat.create({openid: req.body.openid,nickname: req.body.nickname,sex: req.body.sex,language: req.body.language,city: req.body.city,province: req.body.province,country: req.body.country,headimgurl: req.body.headimgurl,privilege: req.body.privilege,created_at: req.body.created_at}, function (err, wechat) {
     // console.log(wechat);
 //     res.render('wechats/show', {
