@@ -2,9 +2,10 @@
  * Created by Moajs on August 25th 2015, 6:11:46 pm.
  */
 
-var $models = require('mount-models')(__dirname);
-
-var Wechat = $models.wechat;
+var signature   = require('wx_jsapi_sign');
+var $models     = require('mount-models')(__dirname);
+var Wechat      = $models.wechat;
+var WechatModel = Wechat.model;
 
 exports.list = function (req, res, next) {
   console.log(req.method + ' /wechats => list, query: ' + JSON.stringify(req.query));
@@ -127,6 +128,61 @@ exports.getsignature = function (req, res) {
   });
 }
 
+exports.oauth_callback = function (req, res) {
+  console.log('----weixin callback -----')
+  var code = req.query.code;
+  // var User = req.model.UserModel;
+
+  req.wx_client.getAccessToken(code, function (err, result) {
+    console.dir('err=' + err);
+    console.dir(result);
+    var accessToken = result.data.access_token;
+    var openid = result.data.openid;
+    var unionid = result.data.unionid;
+
+    console.log('token=' + accessToken);
+    console.log('openid=' + openid);
+    console.log('unionid=' + unionid);
+
+    
+    
+    WechatModel.find_by_unionid(unionid, function(err, user){
+      console.log('微信回调后，User.find_by_unionid(unionid) 返回的user = ' + user)
+      if(err || user == null){
+        console.log('经过unionid查询无结果');
+
+        req.wx_client.getUser(openid, function (err, get_by_openid) {
+          var body = get_by_openid;
+          
+          Wechat.create({
+            unionid: unionid,
+            openid: body.openid,
+            nickname: body.nickname,
+            sex:  body.sex,
+            language: body.language,
+            city: body.city,
+            province: body.province,
+            country: body.country,
+            headimgurl: body.headimgurl,
+            privilege: body.privilege
+          }, function (err, wechat) {
+            if (err) {
+              console.dir('Wechat.create ERROR' + err);
+              res.redirect(req.wx.callback.failed)
+            } else {
+              res.redirect(req.wx.callback.success + '/' + user._id)
+            }
+            
+          });
+        });
+      }else{
+        console.log('根据unionid查询，用户已经存在. redirect /mobile/')
+        
+        res.redirect(req.wx.callback.success + '/' + user._id)
+      }
+    });
+  });
+}
 
 // -- custom api
 

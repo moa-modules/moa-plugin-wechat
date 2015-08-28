@@ -12,3 +12,8 @@ moag wechat openid:string nickname:string sex:string language:string city:string
 
 ngrok http 80
 
+
+
+## 管理
+
+http://127.0.0.1:3029/wechats
