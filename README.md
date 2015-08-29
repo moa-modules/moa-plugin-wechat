@@ -12,16 +12,21 @@
 
     moag wechat openid:string nickname:string sex:string language:string city:string province:string country:string headimgurl:string privilege:string created_at:string 
 
+自己用的，这些字段都是微信返回来的，如果需要，可以让用户系统和wechat模型进行1对1的绑定
 
 ## 本地调试
 
     ngrok http 80
 
+记得在公众号里修改【网页授权获取用户基本信息】，为对应的req.wx.domain里对应的地址，否则无法测试的。
+
 ## 配置
 
+在app.js里设置一下信息
+
     req.wx = {
-      'app_id' : 'wx04014b02a0a61c90',
-      'app_secret' : 'cc4c224b5018370cf6ffc95ad2be309c',
+      'app_id' : '',
+      'app_secret' : '',
       'domain':'e0ad1396.ngrok.io',
       'app_token':'mengxiaoban.com',
       callback:{
@@ -29,7 +34,18 @@
         failed  : '/404'
       }
     }
+    
+注意callback是微信授权后的回调地址
+
+- success是成功后，参数会带wechat_id
+- failed是失败后的处理
+
+OAuth接口是
+
+http://127.0.0.1:3029/wechats/oauth
 
 ## 管理
 
 http://127.0.0.1:3029/wechats
+
+需要添加一个debug选项，如果没有就不能访问管理界面的
