@@ -2,27 +2,17 @@ var express = require('express');
 var router = express.Router();
 var res_api       = require('res.api');
 var $middlewares  = require('mount-middlewares')(__dirname);
-
+var OAuth         = require('wechat-oauth');
 // core controller
 var $ = require('mount-controllers')(__dirname).wechats_controller;
 
-
 function wx_config(req, res, next) {
-  req.wx = {
-    'app_id' : 'wx04014b02a0a61c90',
-    'app_secret' : 'cc4c224b5018370cf6ffc95ad2be309c',
-    'domain':'e0ad1396.ngrok.io',
-    'app_token':'mengxiaoban.com',
-    callback:{
-      success : '/wechats',
-      failed  : '/404'
-    }
+  if (req.wx) {
+    req.wx_client = new OAuth(req.wx.app_id, req.wx.app_secret);
+    next();
+  } else {
+    console.log('please check your wechat settings with req.wx!');
   }
-  
-  var OAuth = require('wechat-oauth');
-  req.wx_client = new OAuth(req.wx.app_id, req.wx.app_secret);
-  
-  next();
 };
 
 // 主页,主要是负责OAuth认真

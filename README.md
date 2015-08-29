@@ -14,6 +14,19 @@ ngrok http 80
 
 
 
+## 配置
+
+    req.wx = {
+      'app_id' : 'wx04014b02a0a61c90',
+      'app_secret' : 'cc4c224b5018370cf6ffc95ad2be309c',
+      'domain':'e0ad1396.ngrok.io',
+      'app_token':'mengxiaoban.com',
+      callback:{
+        success : '/wechats',
+        failed  : '/404'
+      }
+    }
+
 ## 管理
 
 http://127.0.0.1:3029/wechats
