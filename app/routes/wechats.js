@@ -6,17 +6,37 @@ var OAuth         = require('wechat-oauth');
 // core controller
 var $ = require('mount-controllers')(__dirname).wechats_controller;
 
-function wx_config(req, res, next) {
+function wx_config (req, res, next) {
   if (req.wx) {
     req.wx_client = new OAuth(req.wx.app_id, req.wx.app_secret);
     next();
   } else {
     console.log('please check your wechat settings with req.wx!');
+    return res.status(200).json({
+      status:{
+        code:-1,
+        msg:"please check your wechat settings with req.wx!"
+      }
+    });
   }
 };
 
+function wx_option (req, res, next) {
+  if (!req.wx.enable_admin){
+    return res.status(200).json({
+      status:{
+        code:-2,
+        msg:"当前是(req.wx.enable_admin==false),管理接口不可用"
+      }
+    });
+  }else{
+    console.log("当前是(req.wx.enable_admin==true),管理接口可用,访问/wechats")
+    next();
+  }
+}
+
 // 主页,主要是负责OAuth认真
-router.get('/oauth', wx_config, function(req, res) {
+router.get('/oauth', wx_config, wx_option, function(req, res) {
   var url = req.wx_client.getAuthorizeURL('http://' + req.wx.domain + '/wechats/callback','','snsapi_userinfo');
 
   // 重定向请求到微信服务器
@@ -31,9 +51,9 @@ router.get('/oauth', wx_config, function(req, res) {
  * - 如果是新用户，注册并绑定，然后跳转到手机号验证界面
  * - 如果是老用户，跳转到主页
  */
-router.get('/callback', res_api, wx_config, $.oauth_callback);
+router.get('/callback', res_api, wx_config, wx_option, $.oauth_callback);
 
-router.post('/getsignature', wx_config, function config(req, res, next){
+router.post('/getsignature', wx_config, wx_option, function config(req, res, next){
   req.wx_config = {
     cache_json_file : req.server_path,
     appId           : req.wx.app_id,

@@ -44,6 +44,11 @@ OAuth接口是
 
 http://127.0.0.1:3029/wechats/oauth
 
+## status code
+
+- -1 please check your wechat settings with req.wx!
+- -2 当前是(req.wx.enable_admin==false),管理接口不可用
+
 ## 管理
 
 http://127.0.0.1:3029/wechats
