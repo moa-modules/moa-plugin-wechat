@@ -1,7 +1,7 @@
 {
   "name": "moa-plugin-wechat",
-  "version": "1.0.2",
-  "description": "",
+  "version": "1.0.3",
+  "description": "a moajs plugin for wechat sdk development",
   "main": "index.js",
   "scripts": {
     "start": "npm publish .",
