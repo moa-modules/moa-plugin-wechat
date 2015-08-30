@@ -29,6 +29,7 @@
       'app_secret' : '',
       'domain':'e0ad1396.ngrok.io',
       'app_token':'mengxiaoban.com',
+      'enable_admin': true,
       callback:{
         success : '/wechats',
         failed  : '/404'
