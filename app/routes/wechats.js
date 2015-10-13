@@ -37,7 +37,7 @@ function wx_option (req, res, next) {
 
 // 主页,主要是负责OAuth认真
 router.get('/oauth', wx_config, wx_option, function(req, res) {
-  var url = req.wx_client.getAuthorizeURL('http://' + req.wx.domain + '/wechats/callback','','snsapi_userinfo');
+  var url = req.wx_client.getAuthorizeURL(req.wx.domain + '/wechats/callback','','snsapi_userinfo');
 
   // 重定向请求到微信服务器
   res.redirect(url);

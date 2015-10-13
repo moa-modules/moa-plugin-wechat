@@ -20,6 +20,18 @@
 
 记得在公众号里修改【网页授权获取用户基本信息】，为对应的req.wx.domain里对应的地址，否则无法测试的。
 
+另外推荐一个 https://localtunnel.me
+
+特点：
+
+- nodejs写的
+- 稳定，速度也不错
+
+```
+npm install -g localtunnel
+lt --port 8000
+```
+
 ## 配置
 
 在app.js里设置一下信息
@@ -27,7 +39,7 @@
     req.wx = {
       'app_id' : '',
       'app_secret' : '',
-      'domain':'e0ad1396.ngrok.io',
+      'domain':'http://e0ad1396.ngrok.io',
       'app_token':'mengxiaoban.com',
       'enable_admin': true,
       callback:{
