@@ -24,6 +24,7 @@
     "wechat-api": "^1.11.0",
     "wechat-oauth": "^1.1.0",
     "wechat-pay": "^0.2.0",
+    "weixin-pay": "^1.1.6",
     "wx_jsapi_sign": "^1.0.3"
   }
 }
