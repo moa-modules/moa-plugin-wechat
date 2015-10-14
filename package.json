@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/moa-modules/moa-plugin-wechat#readme",
   "dependencies": {
+    "moment": "^2.10.6",
     "nmm-link": "^1.0.2",
     "wechat-api": "^1.11.0",
     "wechat-oauth": "^1.1.0",

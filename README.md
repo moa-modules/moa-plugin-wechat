@@ -53,9 +53,28 @@ lt --port 8000
 - success是成功后，参数会带wechat_id
 - failed是失败后的处理
 
-OAuth接口是
+## API
+
+### OAuth接口
 
 http://127.0.0.1:3029/wechats/oauth
+
+
+- 请求：get
+- 参数：无
+
+### 公众号支付 (JS API)接口
+
+http://127.0.0.1:3029/wechats/pay_h5/:openid/
+
+
+- 请求：post
+- 参数
+  - body：货品名称
+  - detail：货品详情
+  - money：总价
+  - call_back_url 回调
+
 
 ## status code
 
