@@ -2,11 +2,16 @@
 
 [![npm version](https://badge.fury.io/js/moa-plugin-wechat.svg)](http://badge.fury.io/js/moa-plugin-wechat)
 
+这是[moajs](https://github.com/moajs/moa)插件，主要用于微信授权和支付，5分钟完成集成
+
+## Features
+
 - getsignature 用于分享
 - 认证授权后回调函数
   - 成功回调接口（用户存在，完成授权后的工作, wechat_id）
   - 失败回调接口（用户不存在，创建用户, wechat_id）
 - oauth入口
+- pay_h5 支付
 
 ## 模型
 
@@ -16,11 +21,7 @@
 
 ## 本地调试
 
-    ngrok http 80
-
-记得在公众号里修改【网页授权获取用户基本信息】，为对应的req.wx.domain里对应的地址，否则无法测试的。
-
-另外推荐一个 https://localtunnel.me
+推荐 https://localtunnel.me
 
 特点：
 
@@ -29,8 +30,20 @@
 
 ```
 npm install -g localtunnel
-lt --port 8000
+lt --port 3980
 ```
+
+记得在公众号里修改【网页授权获取用户基本信息】，为对应的req.wx.domain里对应的地址，否则无法测试的。
+
+如果本地测试
+
+- 在pay目录下放cert证书
+- 配置好wechat_config.js
+- 保证3个地址一样
+  - req.wx.domain 
+  - 测试授权目录
+  - 网页授权获取用户基本信息
+- 然后moas即可
 
 ## 配置
 
@@ -39,7 +52,7 @@ lt --port 8000
     req.wx = {
       'app_id' : '',
       'app_secret' : '',
-      'domain':'http://e0ad1396.ngrok.io',
+      'domain':'https://zhvplpfvfj.localtunnel.me',
       'app_token':'mengxiaoban.com',
       'enable_admin': true,
       //for pay
@@ -55,6 +68,13 @@ lt --port 8000
 
 - success是成功后，参数会带wechat_id
 - failed是失败后的处理
+
+## 微信设置
+
+- 公众号->微信支付->公众号支付->测试授权目录
+- 公众号->开发者中心->网页服务->网页账号->网页授权获取用户基本信息
+
+如果是产品模式，还要注意安全域名
 
 ## API
 
