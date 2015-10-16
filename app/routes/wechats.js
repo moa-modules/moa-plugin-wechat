@@ -7,15 +7,25 @@ var WXPay         = require('weixin-pay');
 // core controller
 var $ = require('mount-controllers')(__dirname).wechats_controller;
 
-var c = require('../../wechat_config');
+var c = function(req, res, next){
+  next();
+}
+
+if(process.env.moas == 1){
+  console.log('当前在使用moas调试，加载../../wechat_config');
+  c = require('../../wechat_config');
+}else{
+  console.log('当前未使用moas调试，请注意中间件配置');
+}
 
 function wx_config (req, res, next) {
   if (req.wx) {
     req.wx_client = new OAuth(req.wx.app_id, req.wx.app_secret);
     console.log('req.mch_id && req.pfx')
-        console.log(req.wx.mch_id && req.wx.pfx)
-        console.log(req.wx.mch_id)
-        console.log(req.wx.pfx)
+    console.log(req.wx.mch_id && req.wx.pfx)
+    console.log(req.wx.mch_id)
+    console.log(req.wx.pfx)
+    
     if (req.wx.mch_id && req.wx.pfx) {
       req.wx_pay = WXPay({
         appid: req.wx.app_id,
@@ -167,27 +177,11 @@ router.get('/pay_h5/', c, wx_config, wx_pay_option, function(req, res) {
   });
 })
 
-router.get('/pay_calllback', function(req, res, next){
-  console.log('/wechats/pay_calllback get sucess')
-});  
-
-
+// 仅供测试支付成功后回调使用
 router.post('/pay_calllback/:id', function(req, res, next){
   console.log(req.params.id)
   console.log('/wechats/pay_calllback post sucess')
 });  
-
-
-// var wxpay = require('weixin-pay');
-// // 支付结果异步通知
-// router.use('/notify', wxpay.useWXCallback(function(msg, req, res, next){
-//     // 处理商户业务逻辑
-//   console.log(msg);
-//     // res.success() 向微信返回处理成功信息，res.fail()返回失败信息。
-//     res.success();
-// }));
-// 2015_10_14_18_32_53
-
 
 /**
  * Auto generate RESTful url routes.
