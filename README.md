@@ -42,6 +42,9 @@ lt --port 8000
       'domain':'http://e0ad1396.ngrok.io',
       'app_token':'mengxiaoban.com',
       'enable_admin': true,
+      //for pay
+      'mch_id': '1229607702',
+      'pfx': fs.readFileSync('./pay/cert/apiclient_cert.p12'), //微信商户平台证书
       callback:{
         success : '/wechats',
         failed  : '/404'
