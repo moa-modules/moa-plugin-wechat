@@ -65,16 +65,55 @@ http://127.0.0.1:3029/wechats/oauth
 
 ### 公众号支付 (JS API)接口
 
-http://127.0.0.1:3029/wechats/pay_h5/:openid/
+http://127.0.0.1:3029/wechats/pay_h5/
 
 
-- 请求：post
-- 参数
-  - body：货品名称
-  - detail：货品详情
-  - money：总价
-  - call_back_url 回调
+公众号支付 (JS API)
 
+- 请求：get
+- 参数req.params
+  - id      = openid
+  - order_id= 订单编号
+  - body    = 产品名称
+  - detail  = 产品规格描述
+  - fee     = 支付费用，单位是分
+  - cb_url  = 回调url
+
+```
+function pay_h5(){
+  var ordor_id = _get_out_trade_no ();
+  alert(ordor_id)
+  $.get('/wechats/pay_h5?id=o12hcuKXjejDFUwxMgToaGtjtqf4&order_id=' + ordor_id + '&body=1111&detail=222222&fee=1&cb_url=/wechats/pay_calllback/'+ ordor_id, function(data){
+    var r = data.data;
+
+    WeixinJSBridge.invoke('getBrandWCPayRequest', r, function(res){
+      if(res.err_msg == "get_brand_wcpay_request:ok"){
+        alert("支付成功");
+        // 这里可以跳转到订单完成页面向用户展示
+      }else{
+        alert("支付失败，请重试");
+      }
+    });
+  });
+}
+```
+
+
+在app/routes/wechats.js里,定义支付成功回调url
+
+- 必须是post
+- 微信服务器会给发送几次post，所以自己判断一下是否已处理，如果已处理过，忽略即可
+- 完整的对账单还是有必要和微信的对一下的，虽然一般不会有什么问题
+
+```
+// path = /wechats/pay_calllback/'+ ordor_id
+router.post('/pay_calllback/:id', function(req, res, next){
+  console.log(req.params.id)
+  console.log('/wechats/pay_calllback post sucess')
+});  
+```
+
+如果是多个模型用一个callback url，可以参数上增加模型名称
 
 ## status code
 

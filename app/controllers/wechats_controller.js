@@ -114,16 +114,16 @@ exports.getsignature = function (req, res) {
   var re = /\/$/;
 
   if(!re.test(url)) {
-      url = url + '/'
+      url = url 
   }
   console.log('\033[32m'+url+'\033[39m');
 
   signature.getSignature(req.wx_config)(url, function (error, result) {
     console.log(result);
     if (error) {
-      res.api_error(error);
+      res.status(200).json(error);
     } else {
-      res.api(result);
+      res.status(200).json(result);
     }
   });
 }
@@ -183,6 +183,20 @@ exports.oauth_callback = function (req, res) {
     });
   });
 }
+
+// 原生支付回调
+// router.use('/wxpay/native/callback', wxpay.useWXCallback(function(msg, req, res, next){
+//   // msg: 微信回调发送的数据
+//   console.log('/wxpay/native/callback')
+// }));
+//
+// // 支付结果异步通知
+// router.use('/wxpay/notify', wxpay.useWXCallback(function(msg, req, res, next){
+//   // 处理商户业务逻辑
+//   console.log('/wxpay/notify')
+//   // res.success() 向微信返回处理成功信息，res.fail()返回失败信息。
+//   res.success();
+// }));
 
 // -- custom api
 

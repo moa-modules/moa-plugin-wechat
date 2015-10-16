@@ -7,12 +7,17 @@ var WXPay         = require('weixin-pay');
 // core controller
 var $ = require('mount-controllers')(__dirname).wechats_controller;
 
+var c = require('../../wechat_config');
+
 function wx_config (req, res, next) {
   if (req.wx) {
     req.wx_client = new OAuth(req.wx.app_id, req.wx.app_secret);
-    
-    if (req.mch_id && req.pfx) {
-      req.wx_pay = new WXPay({
+    console.log('req.mch_id && req.pfx')
+        console.log(req.wx.mch_id && req.wx.pfx)
+        console.log(req.wx.mch_id)
+        console.log(req.wx.pfx)
+    if (req.wx.mch_id && req.wx.pfx) {
+      req.wx_pay = WXPay({
         appid: req.wx.app_id,
         mch_id: req.wx.mch_id,
         partner_key: req.wx.app_secret, //微信商户平台API密钥
@@ -62,7 +67,7 @@ function wx_option (req, res, next) {
 }
 
 // 主页,主要是负责OAuth认证
-router.get('/oauth', wx_config, wx_option, function(req, res) {
+router.get('/oauth', c, wx_config, wx_option, function(req, res) {
   var url = req.wx_client.getAuthorizeURL(req.wx.domain + '/wechats/callback','','snsapi_userinfo');
 
   // 重定向请求到微信服务器
@@ -76,9 +81,9 @@ router.get('/oauth', wx_config, wx_option, function(req, res) {
  * - 如果是新用户，注册并绑定，然后跳转到手机号验证界面
  * - 如果是老用户，跳转到主页
  */
-router.get('/callback', res_api, wx_config, wx_option, $.oauth_callback);
+router.get('/callback', c, res_api, wx_config, wx_option, $.oauth_callback);
 
-router.post('/getsignature', wx_config, wx_option, function config(req, res, next){
+router.post('/getsignature', c, wx_config, wx_option, function config(req, res, next){
   req.wx_config = {
     cache_json_file : req.server_path,
     appId           : req.wx.app_id,
@@ -96,26 +101,51 @@ router.post('/getsignature', wx_config, wx_option, function config(req, res, nex
 
 参数req.params
 
-- openid
-- body
-- detail
-- money
-- call_back_url
+- id      = openid
+- order_id= 订单编号
+- body    = 产品名称
+- detail  = 产品规格描述
+- fee     = 支付费用，单位是分
+- cb_url  = 回调url
+
+function jsApiCall(){
+  var ordor_id = _get_out_trade_no ();
+  alert(ordor_id)
+  $.get('/wechats/pay_h5?id=o12hcuKXjejDFUwxMgToaGtjtqf4&order_id=' + ordor_id + '&body=1111&detail=222222&fee=1&cb_url=/wechats/pay_calllback/'+ ordor_id, function(data){
+    var r = data.data;
+
+    WeixinJSBridge.invoke('getBrandWCPayRequest', r, function(res){
+      if(res.err_msg == "get_brand_wcpay_request:ok"){
+        alert("支付成功");
+        // 这里可以跳转到订单完成页面向用户展示
+      }else{
+        alert("支付失败，请重试");
+      }
+    });
+  });
+}
 
 */ 
-router.post('/pay_h5/:openid/:body/:detail/:money/:call_back_url', wx_config, wx_pay_option, function(req, res) {
-  var out_trade_no = _get_out_trade_no();
+router.get('/pay_h5/', c, wx_config, wx_pay_option, function(req, res) {  
+  var call_back_url = req.wx.domain + req.query.cb_url;
+  var out_trade_no = req.query.order_id;
+  console.log(req.query.id);
+  // return;
   // req.wx_pay
-  req.wx_pay.getBrandWCPayRequestParams({
-    openid: req.params.openid,
-    body: req.body.body,
-    detail: req.body.detail,
+  var p = {
+    openid: req.query.id,
+    body: req.query.body,
+    detail: req.query.detail,
     out_trade_no: out_trade_no,// 2015_10_14_18_37_187949638969
-    total_fee: req.body.money,
+    total_fee: req.query.fee,
     spbill_create_ip: req.ip,// 请求的ip地址
-    notify_url: req.body.call_back_url
-  }, function(err, result){
-    console.log(err);
+    notify_url: call_back_url,
+    prepay_id:out_trade_no
+  }
+  
+  console.log(p)
+  req.wx_pay.getBrandWCPayRequestParams(p, function(err, result){
+    console.log('getBrandWCPayRequestParams=' +err);
     console.log(result);
     if (err) {
       res.status(200).json({
@@ -137,20 +167,27 @@ router.post('/pay_h5/:openid/:body/:detail/:money/:call_back_url', wx_config, wx
   });
 })
 
+router.get('/pay_calllback', function(req, res, next){
+  console.log('/wechats/pay_calllback get sucess')
+});  
+
+
+router.post('/pay_calllback/:id', function(req, res, next){
+  console.log(req.params.id)
+  console.log('/wechats/pay_calllback post sucess')
+});  
+
+
+// var wxpay = require('weixin-pay');
+// // 支付结果异步通知
+// router.use('/notify', wxpay.useWXCallback(function(msg, req, res, next){
+//     // 处理商户业务逻辑
+//   console.log(msg);
+//     // res.success() 向微信返回处理成功信息，res.fail()返回失败信息。
+//     res.success();
+// }));
 // 2015_10_14_18_32_53
-function _get_date_string () {
-  var moment = require('moment');
-  var date = moment().format('YYYY MM DD HH mm ss');
 
-  return date.split(' ').join('_');
-}
-
-function _get_out_trade_no () {
-  var moment = require('moment');
-  var date = moment().format('YYYY MM DD HH mm ss');
-
-  return _get_date_string ()  + "" + Math.random().toString().substr(2, 10);
-}
 
 /**
  * Auto generate RESTful url routes.
