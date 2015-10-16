@@ -118,6 +118,12 @@ router.post('/pay_calllback/:id', function(req, res, next){
 
 如果是多个模型用一个callback url，可以参数上增加模型名称
 
+还有一个支付结果异步通知
+
+see https://github.com/tvrcgo/weixin-pay#中间件
+
+目前还没有搞定
+
 ## status code
 
 - -1 please check your wechat settings with req.wx!
