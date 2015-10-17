@@ -41,6 +41,21 @@ exports.show = function (req, res, next) {
   });
 };
 
+exports.show_openid = function (req, res, next) {
+  console.log(req.method + ' /wechats/openid/:id => show, query: ' + JSON.stringify(req.query) + 
+    ', params: ' + JSON.stringify(req.params));
+  var id = req.params.id;
+  
+  Wechat.one({openid:id}, function(err, wechat) {
+    console.log(wechat);
+    res.render('wechats/show', {
+      wechat : wechat
+    })
+  });
+};
+
+
+
 exports.edit = function (req, res, next) {
   console.log(req.method + ' /wechats/:id/edit => edit, query: ' + JSON.stringify(req.query) + 
     ', params: ' + JSON.stringify(req.params));
@@ -132,7 +147,7 @@ exports.oauth_callback = function (req, res) {
   console.log('----weixin callback -----')
   var code = req.query.code;
   // var User = req.model.UserModel;
-
+  var callback_attr = req.wx.callback_attr;
   req.wx_client.getAccessToken(code, function (err, result) {
     console.dir('err=' + err);
     console.dir(result);
@@ -143,8 +158,6 @@ exports.oauth_callback = function (req, res) {
     console.log('token=' + accessToken);
     console.log('openid=' + openid);
     console.log('unionid=' + unionid);
-
-    
     
     WechatModel.find_by_unionid(unionid, function(err, user){
       console.log('微信回调后，User.find_by_unionid(unionid) 返回的user = ' + user)
@@ -170,15 +183,16 @@ exports.oauth_callback = function (req, res) {
               console.dir('Wechat.create ERROR' + err);
               res.redirect(req.wx.callback.failed)
             } else {
-              res.redirect(req.wx.callback.success + '/' + user._id)
+              console.log('user[callback_attr='+callback_attr+']=' + wechat[callback_attr])
+              res.redirect(req.wx.callback.success + '/' + wechat[callback_attr])
             }
             
           });
         });
       }else{
-        console.log('根据unionid查询，用户已经存在. redirect /mobile/')
-        
-        res.redirect(req.wx.callback.success + '/' + user._id)
+        console.log('根据unionid查询，用户已经存在. redirect ')
+        console.log('user[callback_attr='+callback_attr+']=' + user[callback_attr])
+        res.redirect(req.wx.callback.success + '/' + user[callback_attr])
       }
     });
   });

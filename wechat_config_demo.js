@@ -14,6 +14,7 @@ module.exports = function (req, res, next) {
     'domain':'https://xxxxx.localtunnel.me',
     'app_token':'xxxx.com',
     'enable_admin': true,
+    'callback_attr':'_id',
     //for pay
     'mch_id': 'xxxxx',
     'pfx': fs.readFileSync('./pay/cert/apiclient_cert.p12'), //微信商户平台证书

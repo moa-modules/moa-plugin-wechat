@@ -97,6 +97,32 @@ http://127.0.0.1:3029/wechats/oauth
 - 请求：get
 - 参数：无
 
+### OAuth callback
+
+callback_attr是配置项里的自定义callback返回字段
+
+默认设置，如下
+
+```
+callback_attr':'_id',
+
+/wechats/
+```
+
+如果想返回openid，对应的回调地址也要改，以为/wechats/的定义/wechats/:id
+如下是内置的根据openid查询的方法
+
+```
+callback_attr':'openid',
+
+/wechats/openid
+```
+
+
+请求定义
+
+- /wechats/:id
+- /wechats/openid/:id
 ### 公众号支付 (JS API)接口
 
 http://127.0.0.1:3029/wechats/pay_h5/

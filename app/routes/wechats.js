@@ -140,6 +140,8 @@ router.get('/pay_h5/', c, wx_config, wx_pay_option, function(req, res) {
   var call_back_url = req.wx.domain + req.query.cb_url;
   var out_trade_no = req.query.order_id;
   console.log(req.query.id);
+  
+  var req_ip = req.ip.replace('::ffff:','')
   // return;
   // req.wx_pay
   var p = {
@@ -148,7 +150,7 @@ router.get('/pay_h5/', c, wx_config, wx_pay_option, function(req, res) {
     detail: req.query.detail,
     out_trade_no: out_trade_no,// 2015_10_14_18_37_187949638969
     total_fee: req.query.fee,
-    spbill_create_ip: req.ip,// 请求的ip地址
+    spbill_create_ip: req_ip,// 请求的ip地址
     notify_url: call_back_url,
     prepay_id:out_trade_no
   }
@@ -183,6 +185,8 @@ router.post('/pay_calllback/:id', function(req, res, next){
   console.log('/wechats/pay_calllback post sucess')
 });  
 
+
+router.get('/openid/:id',$.show_openid)
 /**
  * Auto generate RESTful url routes.
  *
