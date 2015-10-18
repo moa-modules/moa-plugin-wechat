@@ -184,7 +184,10 @@ exports.oauth_callback = function (req, res) {
               res.redirect(req.wx.callback.failed)
             } else {
               console.log('user[callback_attr='+callback_attr+']=' + wechat[callback_attr])
-              res.redirect(req.wx.callback.success + '/' + wechat[callback_attr])
+              var url = req.wx.callback.success + '/' + wechat[callback_attr];
+              url = _url(url);
+              console.log(url);
+              res.redirect(url)
             }
             
           });
@@ -192,10 +195,17 @@ exports.oauth_callback = function (req, res) {
       }else{
         console.log('根据unionid查询，用户已经存在. redirect ')
         console.log('user[callback_attr='+callback_attr+']=' + user[callback_attr])
-        res.redirect(req.wx.callback.success + '/' + user[callback_attr])
+        var url = req.wx.callback.success + '/' + user[callback_attr];
+        url = _url(url);
+        console.log(url);
+        res.redirect(url);
       }
     });
   });
+}
+
+function _url(url){
+  return url.replace('//','/')
 }
 
 // 原生支付回调
