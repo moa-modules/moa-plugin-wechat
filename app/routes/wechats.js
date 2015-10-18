@@ -78,7 +78,13 @@ function wx_option (req, res, next) {
 
 // 主页,主要是负责OAuth认证
 router.get('/oauth', c, wx_config, wx_option, function(req, res) {
-  var auth_url = req.wx.domain + req.wx.callback.url
+  console.log('req.query');  
+  var qs = require('qs')
+  var query_json = qs.stringify(req.query);
+  console.log(query_json);
+  
+  var auth_url = req.wx.domain + req.wx.callback.url + "/" + query_json
+  console.log('auth_url = ' + auth_url);
   var url = req.wx_client.getAuthorizeURL(auth_url, '', 'snsapi_userinfo');
 
   // 重定向请求到微信服务器
@@ -93,6 +99,8 @@ router.get('/oauth', c, wx_config, wx_option, function(req, res) {
  * - 如果是老用户，跳转到主页
  */
 router.get('/callback', c, res_api, wx_config, wx_option, $.oauth_callback);
+
+router.get('/callback2/:id', c, res_api, wx_config, wx_option, $.oauth_callback2);
 
 router.post('/getsignature', c, wx_config, wx_option, function config(req, res, next){
   req.wx_config = {

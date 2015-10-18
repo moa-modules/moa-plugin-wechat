@@ -11,15 +11,16 @@ module.exports = function (req, res, next) {
   req.wx = {
     'app_id' : '',
     'app_secret' : '',
-    'domain':'https://xxxxx.localtunnel.me',
-    'app_token':'xxxx.com',
+    'domain':'https://i5ting2.localtunnel.me',
+    'app_token':'moa-plugin-wechat',
     'enable_admin': true,
-    'callback_attr':'_id',
     //for pay
-    'mch_id': 'xxxxx',
+    'mch_id': '1229607702',
     'pfx': fs.readFileSync('./pay/cert/apiclient_cert.p12'), //微信商户平台证书
     //callback
     callback:{
+      url     : '/wechats/callback2',
+      attr    : '_id',
       success : '/wechats',
       failed  : '/404'
     }

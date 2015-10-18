@@ -124,7 +124,12 @@ callback_attr是配置项里的自定义callback返回字段
 默认设置，如下
 
 ```
-callback_attr':'_id',
+callback:{
+  url     : '/wechats/callback',
+  attr    : '_id',
+  success : '/wechats',
+  failed  : '/404'
+}
 
 /wechats/
 ```
@@ -133,7 +138,13 @@ callback_attr':'_id',
 如下是内置的根据openid查询的方法
 
 ```
-callback_attr':'openid',
+callback:{
+  url     : '/wechats/callback',
+  attr    : 'openid',
+  success : '/wechats',
+  failed  : '/404'
+}
+
 
 /wechats/openid
 ```
@@ -143,6 +154,29 @@ callback_attr':'openid',
 
 - /wechats/:id
 - /wechats/openid/:id
+
+###  OAuth callback with query string
+
+```
+callback:{
+  url     : '/wechats/callback2',
+  attr    : '_id',
+  success : '/wechats',
+  failed  : '/404'
+}
+```
+
+https://i5ting2.localtunnel.me/wechats/oauth?a=1&b=2
+
+redirect to 
+
+```
+/wechats/:id
+```
+
+GET /wechats/:id => show, query: {"a":"1","b":"2"}, params: {"id":"55dfa5163d2cfc67c1736fdf"}
+
+
 ### 公众号支付 (JS API)接口
 
 http://127.0.0.1:3029/wechats/pay_h5/
