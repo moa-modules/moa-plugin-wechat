@@ -78,7 +78,8 @@ function wx_option (req, res, next) {
 
 // 主页,主要是负责OAuth认证
 router.get('/oauth', c, wx_config, wx_option, function(req, res) {
-  var url = req.wx_client.getAuthorizeURL(req.wx.domain + '/wechats/callback','','snsapi_userinfo');
+  var auth_url = req.wx.domain + req.wx.callback.url
+  var url = req.wx_client.getAuthorizeURL(auth_url, '', 'snsapi_userinfo');
 
   // 重定向请求到微信服务器
   res.redirect(url);
@@ -142,6 +143,8 @@ router.get('/pay_h5/', c, wx_config, wx_pay_option, function(req, res) {
   console.log(req.query.id);
   
   var req_ip = req.ip.replace('::ffff:','')
+  
+  // spbill_create_ip: '::ffff:218.67.133.28',
   // return;
   // req.wx_pay
   var p = {

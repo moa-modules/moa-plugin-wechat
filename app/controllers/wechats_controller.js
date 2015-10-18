@@ -147,7 +147,7 @@ exports.oauth_callback = function (req, res) {
   console.log('----weixin callback -----')
   var code = req.query.code;
   // var User = req.model.UserModel;
-  var callback_attr = req.wx.callback_attr;
+  var callback_attr = req.wx.callback.attr;
   req.wx_client.getAccessToken(code, function (err, result) {
     console.dir('err=' + err);
     console.dir(result);
